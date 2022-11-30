@@ -89,5 +89,4 @@ export const saveImage = file => {
     }
   );
 
-
 }
