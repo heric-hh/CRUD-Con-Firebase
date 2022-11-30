@@ -5,7 +5,8 @@ import {
     onGetTask,
     deleteTask,
     getTask,
-    updateTask
+    updateTask,
+    saveImage
 } from './firebase.js';
 
 // Seleccionar task container
@@ -18,32 +19,43 @@ let editStatus = false;
 
 let id = '';
 
+
+
+const uploadFileAction = ( e ) => {
+    const file = e.target.files[0];
+    saveImage ( file );
+}
+
+const saveSubmit = ( e ) => {
+    e.preventDefault();
+    const title = formTask
+}
+
+
 // Evento para ejecutar algo cuando la app cargue
 window.addEventListener( 'DOMContentLoaded', async () => {
     
     // Traer tareas de forma asincrona
     onGetTask ((querySnapshot) =>  {
-        let html = '';
+        taskContainer.innerHTML = '';
 
         querySnapshot.forEach( doc => {
-        const task = doc.data();
-        html += `
-            <div class="">
-                <h3> ${ task.title } </h3>
-                <p> ${ task.description } </p>
+            const task = doc.data();
+            taskContainer.innerHTML += `
+                <div class="card card-body mt-2 border-primary">
+                    <h3> ${ task.title } </h3>
+                    <p> ${ task.description } </p>
 
-                <button class="btn-delete" data-id="${ doc.id }"> Borrar </button>
-                <button class="btn-edit" data-id="${ doc.id }"> Editar </button>
+                    <button class="btn-delete" data-id="${ doc.id }"> Borrar </button>
+                    <button class="btn-edit" data-id="${ doc.id }"> Editar </button>
 
-            </div>
+                </div>
         `;                
     } );
     
-        taskContainer.innerHTML = html;
 
         // Seleccionar botones para borrar
         const btnsDelete = taskContainer.querySelectorAll( '.btn-delete' );
-
         btnsDelete.forEach ( btn => {
             btn.addEventListener ( 'click', ( {target: { dataset }} ) => {
                 deleteTask( dataset.id );
@@ -65,8 +77,10 @@ window.addEventListener( 'DOMContentLoaded', async () => {
 
                 taskForm['btn-task-save'].innerText = 'Update';
             } );
-        })
+        });
     });
+
+    document.querySelector( '#file-task' ).addEventListener( 'change', uploadFileAction );
 } );
 
 
@@ -76,20 +90,22 @@ taskForm.addEventListener ( 'submit', ( e ) => {
     // Seleccionar inputs
     const title = taskForm['task-title'];
     const description = taskForm['task-description'];
+    const imageUrl = document.querySelector( '#image' ).src;
 
-    // Guardar valores de los inputs
-    saveTask ( title.value, description.value );
-
-    if ( !editStatus ) {
-        saveTask ( title.value, description.value );
+    if ( title.length > 3 && description.length > 3 ) {
+        if ( !editStatus ) {
+            saveTask(title, description, imageUrl);
+            document.querySelector( '#image' ).src = '';
+        } else {
+            updateTask ( id, {
+                title: title,
+                description: description,
+            } );
+            editStatus = false;
+            taskForm['btn-task-save'].innerHTML = "Save";
+        }
+        taskForm.reset();
     } else {
-        updateTask ( id, {
-            title: title.value, 
-            description: description.value
-        } );
-        editStatus = false;
+        alert ( 'Debes escribir algo' );
     }
-
-    // Limpiar los campos
-    taskForm.reset();
 } )

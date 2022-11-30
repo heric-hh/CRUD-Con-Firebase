@@ -7,22 +7,24 @@
     <title> Firebase CRUD </title>
 </head>
 <body>
+    <h1 class="h4">Add Task</h1>
     <form id="task-form">
-        <label for="title"> Titulo </label>
-        <input type="text" placeholder="Titulo" id="task-title">
+        <label for="title">Title</label>
+        <input class="form-control mb-3" type="text" placeholder="Task title" id="task-title">
 
-        <label for="description"> Descripcion </label>
-        <textarea name="" id="task-description" cols="30" rows="3" placeholder="Descripcion"></textarea>
-
-        <button id="btn-task-save"> Save </button>
+        <label for="description">Description</label>
+        <textarea class="form-control mb-4" id="task-description" rows="3" placeholder="Task Description"></textarea>
+        <input type="file" name="file-task" id="file-task">
+        
+        <div class="progress mb-3 mt-3">
+        <div class="progress-bar bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+    
+        <button class="btn btn-primary" id="btn-task-save">Save</button>
     </form>
 
-    <div id="tasks-container">
-
+    <div class="col-md-6" id="tasks-container"></div>
     </div>
 
-    <script type="module" src="./index.js"></script>
-
-    
+    <script type="module" src="index.js"></script>
 </body>
 </html>
