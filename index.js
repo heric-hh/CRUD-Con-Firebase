@@ -23,13 +23,17 @@ let id = '';
 
 const uploadFileAction = ( e ) => {
     const file = e.target.files[0];
-    saveImage ( file );
+
+    if ( file.type.includes( 'image' ) ) {
+        console.log( 'Sí es una imagen' );
+        saveImage( file );
+    }
 }
 
-const saveSubmit = ( e ) => {
+/*const saveSubmit = ( e ) => {
     e.preventDefault();
     const title = formTask
-}
+}*/
 
 
 // Evento para ejecutar algo cuando la app cargue
@@ -88,14 +92,13 @@ taskForm.addEventListener ( 'submit', ( e ) => {
     e.preventDefault();
 
     // Seleccionar inputs
-    const title = taskForm['task-title'];
-    const description = taskForm['task-description'];
+    const title = taskForm['task-title'].value;
+    const description = taskForm['task-description'].value;
     const imageUrl = document.querySelector( '#image' ).src;
 
     if ( title.length > 3 && description.length > 3 ) {
         if ( !editStatus ) {
             saveTask(title, description, imageUrl);
-            document.querySelector( '#image' ).src = '';
         } else {
             updateTask ( id, {
                 title: title,
